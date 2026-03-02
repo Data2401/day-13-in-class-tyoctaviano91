@@ -1,6 +1,6 @@
 ---
 title: "Join Lab"
-author: "Dr. Shoemaker"
+author: "Tyler Guerrero"
 date: "DATA 2401"
 output: html_document
 ---
@@ -48,7 +48,17 @@ Questions:
 - Find patients that haven't visited the hospital
 
 ```{r}
+full_join(patients, visits)
 
+left_join(visits, patients)
+
+full_join(visits, patients)
+
+full_join(visits, doctors)
+
+full_join(doctors, visits) %>% full_join(patients) %>% filter(name == "Bob")
+
+anti_join(patients, visits)
 ```
 
 ## Dataset 2
@@ -69,13 +79,18 @@ my_flights <- na.omit(my_flights) ## this dataset has data on cancelled flights 
 Create a dataframe of the average arrival delays for each _destination_
 
 ```{r}
+delay_by_dest <- my_flights %>% group_by(dest) %>% summarise(average_arrival_delay = mean(arr_delay, na.rm = T)) %>% arrange(average_arrival_delay)
 
 ```
 
 Then use `left_join()` to join on the "airports" dataframe, which has the airport information.
 
 ```{r}
+glimpse(airports)
 
+delay_by_dest %>% 
+  left_join(airports, join_by(dest == faa))
+  
 ```
 
 
@@ -84,7 +99,9 @@ Note here: the column names don't match anymore!
 Which airport had the largest average arrival delay?
 
 ```{r}
+my_flights_avg %>% arrange(-average_arrival_delay)
 
+## EWR
 ```
 
 
@@ -93,9 +110,12 @@ What is the average departure delay for each airline? To answer this with someth
 
 
 ```{r}
+glimpse(airlines)
 
 
-````
+
+
+```
 
 Which airline had the smallest average departure delay? 
 
