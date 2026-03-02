@@ -85,7 +85,7 @@ my_flights <- na.omit(my_flights) ## this dataset has data on cancelled flights 
 Create a dataframe of the average arrival delays for each _destination_
 
 ```{r}
-delay_by_dest <- my_flights %>% group_by(dest) %>% summarise(average_arrival_delay = mean(arr_delay, na.rm = T)) %>% arrange(average_arrival_delay)
+delay_by_dest <- my_flights %>% group_by(dest) %>% summarise(average_arrival_delay = mean(arr_delay))
 
 ```
 
@@ -93,9 +93,12 @@ Then use `left_join()` to join on the "airports" dataframe, which has the airpor
 
 ```{r}
 glimpse(airports)
+glimpse(delay_by_dest)
 
 delay_by_dest %>% 
-  left_join(airports, join_by(dest == faa))
+  inner_join(airports, join_by(dest == faa)) %>% 
+  select(name, average_arrival_delay) %>% 
+  arrange(-average_arrival_delay)
   
 ```
 
@@ -105,9 +108,12 @@ Note here: the column names don't match anymore!
 Which airport had the largest average arrival delay?
 
 ```{r}
-my_flights_avg %>% arrange(-average_arrival_delay)
+delay_by_dest %>% 
+  inner_join(airports, join_by(dest == faa)) %>% 
+  select(name, average_arrival_delay) %>% 
+  slice_max(average_arrival_delay)
 
-## EWR
+## Columbia Metropolitan: 41.76415
 ```
 
 
@@ -118,7 +124,12 @@ What is the average departure delay for each airline? To answer this with someth
 ```{r}
 glimpse(airlines)
 
-
+my_flights %>% 
+  group_by(carrier) %>% 
+  summarise(average_dep_delay = mean(dep_delay)) %>% 
+  left_join(airlines, join_by(carrier)) %>% 
+  select(name, average_dep_delay) %>% 
+  arrange(-average_dep_delay)
 
 
 ```
@@ -129,8 +140,14 @@ Which airline had the smallest average departure delay?
 
 ```{r}
 
+my_flights %>% 
+  group_by(carrier) %>% 
+  summarise(average_dep_delay = mean(dep_delay)) %>% 
+  left_join(airlines, join_by(carrier)) %>% 
+  select(name, average_dep_delay) %>% 
+  slice_min(average_dep_delay)
 
-
+## US Airways Inc.
 ```
 
 
