@@ -48,16 +48,22 @@ Questions:
 - Find patients that haven't visited the hospital
 
 ```{r}
-full_join(patients, visits)
+## Names of patients who have visited hospital.
+inner_join(patients, visits)
 
+## All patients visit information.
+left_join(patients, visits)
+
+## All visits and patient information, even if there isn't patient information.
 left_join(visits, patients)
 
-full_join(visits, patients)
+## Show all visits with assigned doctors.
+left_join(visits, doctors)
 
-full_join(visits, doctors)
+## Doctors Bob has met with.
+left_join(patients, visits) %>% left_join(doctors) %>% filter(name == "Bob")
 
-full_join(doctors, visits) %>% full_join(patients) %>% filter(name == "Bob")
-
+## Patients that haven't visited the hospital.
 anti_join(patients, visits)
 ```
 
