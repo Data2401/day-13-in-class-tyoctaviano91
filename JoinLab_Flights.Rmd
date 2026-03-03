@@ -230,6 +230,12 @@ What does anti_join(flights, airports, by = c("dest" = "faa")) tell you? What do
 Perform the two joins below and consider what the results **are**. 
 
 ```{r}
+anti_join(flights, airports, by = c("dest" = "faa"))
 
+## These are flights that are not in the faa table.
+
+anti_join(airports, flights, by = c("faa" = "dest"))
+
+## Airports without flights there.
 ```
 
